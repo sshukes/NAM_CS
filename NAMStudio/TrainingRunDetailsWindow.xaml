@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Training Run Details" Height="380" Width="520">
     <ScrollViewer Padding="12">
-        <StackPanel Spacing="8">
+        <StackPanel >
             <TextBlock Text="Metadata" FontWeight="Bold" FontSize="14" />
             <StackPanel>
                 <TextBlock Text="Model Name" FontWeight="SemiBold" />
