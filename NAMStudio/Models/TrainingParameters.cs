@@ -11,20 +11,4 @@ public class TrainingParameters
     public double TrainSplit { get; set; } = 0.9;
 
     public bool UseAugmentation { get; set; } = true;
-
-    public double ValidationSplit { get; set; } = 0.1;
-
-    public int SampleRate { get; set; } = 48000;
-
-    public int BlockSize { get; set; } = 2048;
-
-    public double L2Regularization { get; set; } = 0.0001;
-
-    public bool EarlyStopping { get; set; } = true;
-
-    public int EarlyStoppingPatience { get; set; } = 4;
-
-    public bool NormalizeInput { get; set; } = true;
-
-    public string Optimizer { get; set; } = "Adam";
 }

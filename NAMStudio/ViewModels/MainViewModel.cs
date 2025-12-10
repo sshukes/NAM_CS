@@ -5,10 +5,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows;
-using Microsoft.Win32;
 
-using NAMStudio;
 using NAMStudio.Models;
 using NAMStudio.Services;
 
@@ -20,7 +17,6 @@ public class MainViewModel : INotifyPropertyChanged
     private readonly ImpulseResponseService _impulseResponseService = new();
     private readonly AudioEngine _audioEngine = new();
     private readonly PresetService _presetService = new();
-    private readonly TrainingService _trainingService = new();
     private string _modelPath = "";
     private string _irPath = "";
     private double _inputGain = 0;
@@ -38,10 +34,6 @@ public class MainViewModel : INotifyPropertyChanged
     private double _inputLevel;
     private double _outputLevel;
     private Preset? _selectedPreset;
-    private string _inputWaveformPath = string.Empty;
-    private string _targetWaveformPath = string.Empty;
-    private TrainingRun? _selectedTrainingRun;
-    private int _selectedTabIndex;
 
     public MainViewModel()
     {
@@ -54,15 +46,7 @@ public class MainViewModel : INotifyPropertyChanged
         DeletePresetCommand = new RelayCommand(_ => DeletePreset(), _ => SelectedPreset is not null);
         RenamePresetCommand = new RelayCommand(_ => RenamePreset(), _ => SelectedPreset is not null);
 
-        BrowseInputWaveformCommand = new RelayCommand(_ => BrowseInputWaveform());
-        BrowseTargetWaveformCommand = new RelayCommand(_ => BrowseTargetWaveform());
-        StartTrainingCommand = new RelayCommand(async _ => await StartTrainingAsync(), _ => CanStartTraining());
-        OpenRunDetailsCommand = new RelayCommand(OpenRunDetails, parameter => parameter is TrainingRun || SelectedTrainingRun is not null);
-        NavigateTabCommand = new RelayCommand(parameter => NavigateToTab(parameter));
-        OpenTrainingWorkspaceCommand = new RelayCommand(_ => OpenTrainingWorkspace());
-
         _audioEngine.LevelsUpdated += OnLevelsUpdated;
-        TrainingMetadata.PropertyChanged += (_, _) => (StartTrainingCommand as RelayCommand)?.RaiseCanExecuteChanged();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -75,25 +59,8 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand LoadPresetCommand { get; }
     public ICommand DeletePresetCommand { get; }
     public ICommand RenamePresetCommand { get; }
-    public ICommand BrowseInputWaveformCommand { get; }
-    public ICommand BrowseTargetWaveformCommand { get; }
-    public ICommand StartTrainingCommand { get; }
-    public ICommand OpenRunDetailsCommand { get; }
-    public ICommand NavigateTabCommand { get; }
-    public ICommand OpenTrainingWorkspaceCommand { get; }
 
     public ObservableCollection<Preset> Presets { get; } = new();
-    public ObservableCollection<TrainingRun> TrainingRuns { get; } = new();
-
-    public TrainingMetadata TrainingMetadata { get; } = new();
-
-    public TrainingParameters TrainingParameters { get; } = new();
-
-    public int SelectedTabIndex
-    {
-        get => _selectedTabIndex;
-        set => SetField(ref _selectedTabIndex, value);
-    }
 
     public string ModelPath
     {
@@ -224,42 +191,6 @@ public class MainViewModel : INotifyPropertyChanged
             {
                 (DeletePresetCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 (RenamePresetCommand as RelayCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-    }
-
-    public string InputWaveformPath
-    {
-        get => _inputWaveformPath;
-        set
-        {
-            if (SetField(ref _inputWaveformPath, value))
-            {
-                (StartTrainingCommand as RelayCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-    }
-
-    public string TargetWaveformPath
-    {
-        get => _targetWaveformPath;
-        set
-        {
-            if (SetField(ref _targetWaveformPath, value))
-            {
-                (StartTrainingCommand as RelayCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-    }
-
-    public TrainingRun? SelectedTrainingRun
-    {
-        get => _selectedTrainingRun;
-        set
-        {
-            if (SetField(ref _selectedTrainingRun, value))
-            {
-                (OpenRunDetailsCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
     }
@@ -414,149 +345,6 @@ public class MainViewModel : INotifyPropertyChanged
         LimiterEnabled = preset.LimiterEnabled;
         _modelService.LoadModelIfExists(ModelPath, _audioEngine);
         _impulseResponseService.LoadImpulseIfExists(IrPath, _audioEngine);
-    }
-
-    private void BrowseInputWaveform()
-    {
-        var dialog = new OpenFileDialog
-        {
-            Filter = "Waveform|*.wav;*.flac;*.aiff;*.aif|All files|*.*",
-            Title = "Select input waveform"
-        };
-
-        if (dialog.ShowDialog() == true)
-        {
-            InputWaveformPath = dialog.FileName;
-            StatusMessage = "Loaded input waveform";
-        }
-    }
-
-    private void BrowseTargetWaveform()
-    {
-        var dialog = new OpenFileDialog
-        {
-            Filter = "Waveform|*.wav;*.flac;*.aiff;*.aif|All files|*.*",
-            Title = "Select target/output waveform"
-        };
-
-        if (dialog.ShowDialog() == true)
-        {
-            TargetWaveformPath = dialog.FileName;
-            StatusMessage = "Loaded target/output waveform";
-        }
-    }
-
-    private bool CanStartTraining()
-    {
-        return !string.IsNullOrWhiteSpace(InputWaveformPath)
-            && !string.IsNullOrWhiteSpace(TargetWaveformPath)
-            && !string.IsNullOrWhiteSpace(TrainingMetadata.ModelName);
-    }
-
-    private async Task StartTrainingAsync()
-    {
-        if (!CanStartTraining())
-        {
-            StatusMessage = "Provide waveforms and model name before training";
-            return;
-        }
-
-        var run = new TrainingRun
-        {
-            InputWaveformPath = InputWaveformPath,
-            TargetWaveformPath = TargetWaveformPath,
-            Metadata = CloneMetadata(TrainingMetadata),
-            Parameters = CloneParameters(TrainingParameters),
-            Status = "Queued",
-            CreatedAt = DateTimeOffset.Now,
-            StatusMessage = "Waiting for trainer"
-        };
-
-        TrainingRuns.Insert(0, run);
-        SelectedTrainingRun = run;
-        StatusMessage = "Training started...";
-
-        await _trainingService.TrainAsync(run);
-
-        StatusMessage = string.IsNullOrWhiteSpace(run.NamFilePath)
-            ? "Training finished"
-            : $"Training finished: {run.NamFilePath}";
-    }
-
-    private static TrainingMetadata CloneMetadata(TrainingMetadata metadata)
-    {
-        return new TrainingMetadata
-        {
-            Artist = metadata.Artist,
-            Genre = metadata.Genre,
-            ModelName = metadata.ModelName,
-            Notes = metadata.Notes,
-            Amp = metadata.Amp,
-            Cabinet = metadata.Cabinet,
-            Microphone = metadata.Microphone,
-            SessionId = metadata.SessionId
-        };
-    }
-
-    private static TrainingParameters CloneParameters(TrainingParameters parameters)
-    {
-        return new TrainingParameters
-        {
-            BatchSize = parameters.BatchSize,
-            Epochs = parameters.Epochs,
-            LearningRate = parameters.LearningRate,
-            TrainSplit = parameters.TrainSplit,
-            UseAugmentation = parameters.UseAugmentation,
-            ValidationSplit = parameters.ValidationSplit,
-            SampleRate = parameters.SampleRate,
-            BlockSize = parameters.BlockSize,
-            L2Regularization = parameters.L2Regularization,
-            EarlyStopping = parameters.EarlyStopping,
-            EarlyStoppingPatience = parameters.EarlyStoppingPatience,
-            NormalizeInput = parameters.NormalizeInput,
-            Optimizer = parameters.Optimizer
-        };
-    }
-
-    private void OpenRunDetails(object? parameter)
-    {
-        var run = parameter as TrainingRun ?? SelectedTrainingRun;
-        if (run is null)
-        {
-            StatusMessage = "Select a training run first";
-            return;
-        }
-
-        var window = new TrainingRunDetailsWindow(run)
-        {
-            Owner = Application.Current?.MainWindow
-        };
-
-        window.ShowDialog();
-    }
-
-    private void OpenTrainingWorkspace()
-    {
-        var window = new TrainingWorkspaceWindow(this)
-        {
-            Owner = Application.Current?.MainWindow
-        };
-
-        window.Show();
-        window.Activate();
-    }
-
-    private void NavigateToTab(object? parameter)
-    {
-        if (parameter is null)
-        {
-            return;
-        }
-
-        if (int.TryParse(parameter.ToString(), out var index))
-        {
-            SelectedTabIndex = Math.Max(0, index);
-        }
     }
 
     private void OnLevelsUpdated(object? sender, LevelsEventArgs e)

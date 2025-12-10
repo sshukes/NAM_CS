@@ -12,21 +12,10 @@ public class TrainingRun : INotifyPropertyChanged
     private double _validationLoss;
     private double _signalToNoiseRatio;
     private DateTimeOffset _createdAt = DateTimeOffset.Now;
-    private string _statusMessage = string.Empty;
-    private string _inputWaveformPath = string.Empty;
-    private string _targetWaveformPath = string.Empty;
 
-    public string InputWaveformPath
-    {
-        get => _inputWaveformPath;
-        set => SetField(ref _inputWaveformPath, value);
-    }
+    public string CleanWaveformPath { get; set; } = string.Empty;
 
-    public string TargetWaveformPath
-    {
-        get => _targetWaveformPath;
-        set => SetField(ref _targetWaveformPath, value);
-    }
+    public string NoisyWaveformPath { get; set; } = string.Empty;
 
     public TrainingMetadata Metadata { get; set; } = new();
 
@@ -60,12 +49,6 @@ public class TrainingRun : INotifyPropertyChanged
     {
         get => _signalToNoiseRatio;
         set => SetField(ref _signalToNoiseRatio, value);
-    }
-
-    public string StatusMessage
-    {
-        get => _statusMessage;
-        set => SetField(ref _statusMessage, value);
     }
 
     public DateTimeOffset CreatedAt
