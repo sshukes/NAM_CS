@@ -1,0 +1,80 @@
+<Window x:Class="NAMStudio.TrainingRunDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Training Run Details" Height="380" Width="520">
+    <ScrollViewer Padding="12">
+        <StackPanel Spacing="8">
+            <TextBlock Text="Metadata" FontWeight="Bold" FontSize="14" />
+            <StackPanel>
+                <TextBlock Text="Model Name" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Metadata.ModelName}" />
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Artist" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Metadata.Artist}" />
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Genre" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Metadata.Genre}" />
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Notes" FontWeight="SemiBold" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding Metadata.Notes}" />
+            </StackPanel>
+
+            <Separator />
+            <TextBlock Text="Parameters" FontWeight="Bold" FontSize="14" />
+            <UniformGrid Columns="2" Rows="3" Margin="0,4,0,0" HorizontalAlignment="Stretch">
+                <StackPanel>
+                    <TextBlock Text="Epochs" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Parameters.Epochs}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Batch Size" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Parameters.BatchSize}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Learning Rate" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Parameters.LearningRate}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Train Split" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Parameters.TrainSplit, StringFormat=P0}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Use Augmentation" FontWeight="SemiBold" />
+                    <CheckBox IsChecked="{Binding Parameters.UseAugmentation}" IsEnabled="False" />
+                </StackPanel>
+            </UniformGrid>
+
+            <Separator />
+            <TextBlock Text="Results" FontWeight="Bold" FontSize="14" />
+            <StackPanel>
+                <TextBlock Text="Status" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Status}" />
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="NAM File" FontWeight="SemiBold" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding NamFilePath}" />
+            </StackPanel>
+            <UniformGrid Columns="2" Rows="2" Margin="0,4,0,0">
+                <StackPanel>
+                    <TextBlock Text="Final Loss" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding FinalLoss}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Validation Loss" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding ValidationLoss}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="SNR (dB)" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding SignalToNoiseRatio}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Created" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding CreatedAt, StringFormat=G}" />
+                </StackPanel>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

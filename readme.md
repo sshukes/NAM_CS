@@ -28,4 +28,15 @@ From a Windows terminal:
 dotnet run --project NAMStudio/NAMStudio.csproj
 ```
 
+### Running and debugging in Visual Studio Code
+
+1. Install the C# Dev Kit and .NET Install Tool extensions when prompted.
+2. Open the repo folder in VS Code (`File → Open Folder…`).
+3. Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> and choose **build** to restore and compile the project (tasks are defined in `.vscode/tasks.json`).
+4. Start debugging with <kbd>F5</kbd> using the **NAMStudio (.NET Launch)** configuration; VS Code will build and launch `NAMStudio.exe` from `bin/Debug/net8.0-windows`.
+
 Use the UI to load `.nam` models and impulse responses (`.wav`/`.irs`), tweak tone controls, manage presets, and start or stop audio playback. Presets are stored in `%APPDATA%/NAMStudio/Presets` as JSON.
+
+### Training clean/noisy waveforms into a NAM file
+
+Open the **Training** tab to prepare a dataset and export a new `.nam` snapshot. Provide a clean waveform and a noisy waveform, enter NAM metadata (model name, artist, genre, notes), adjust training parameters (epochs, batch size, learning rate, train split, augmentation), and click **Train and Export NAM**. Each run is listed in the Training Runs grid with status, metrics, and the generated NAM file path. Selecting a run and choosing **Open** or **View Selected** shows a detail window with the metadata, parameters, metrics, and export location.
