@@ -28,11 +28,4 @@ From a Windows terminal:
 dotnet run --project NAMStudio/NAMStudio.csproj
 ```
 
-### Running and debugging in Visual Studio Code
-
-1. Install the C# Dev Kit and .NET Install Tool extensions when prompted.
-2. Open the repo folder in VS Code (`File → Open Folder…`).
-3. Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> and choose **build** to restore and compile the project (tasks are defined in `.vscode/tasks.json`).
-4. Start debugging with <kbd>F5</kbd> using the **NAMStudio (.NET Launch)** configuration; VS Code will build and launch `NAMStudio.exe` from `bin/Debug/net8.0-windows`.
-
 Use the UI to load `.nam` models and impulse responses (`.wav`/`.irs`), tweak tone controls, manage presets, and start or stop audio playback. Presets are stored in `%APPDATA%/NAMStudio/Presets` as JSON.
