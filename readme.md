@@ -40,8 +40,3 @@ Use the UI to load `.nam` models and impulse responses (`.wav`/`.irs`), tweak to
 ### Training clean/noisy waveforms into a NAM file
 
 Open the **Training** tab to prepare a dataset and export a new `.nam` snapshot. Provide a clean waveform and a noisy waveform, enter NAM metadata (model name, artist, genre, notes), adjust training parameters (epochs, batch size, learning rate, train split, augmentation), and click **Train and Export NAM**. Each run is listed in the Training Runs grid with status, metrics, and the generated NAM file path. Selecting a run and choosing **Open** or **View Selected** shows a detail window with the metadata, parameters, metrics, and export location.
-
-## Troubleshooting
-
-- If you see `System.IO.IOException` related to audio devices, ensure your input and output devices are available and not locked by other applications.
-- Avoid using the `Spacing` attribute on `StackPanel` or other panels when targeting older WPF versions; the project removes these to stay broadly compatible. Use `Margin` to control layout spacing if you copy or extend the UI.

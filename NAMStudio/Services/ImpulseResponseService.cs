@@ -32,7 +32,7 @@ public class ImpulseResponseService
         var taps = new List<float>();
         await using var reader = new AudioFileReader(path);
         var buffer = new float[reader.WaveFormat.SampleRate];
-        var read = await reader.ReadAsync(buffer, 0, buffer.Length);
+        var read = await reader.ReadAsync(FloatsToBytes(buffer), 0, buffer.Length);
         for (var i = 0; i < read; i++)
         {
             taps.Add(buffer[i]);
@@ -44,6 +44,13 @@ public class ImpulseResponseService
             Taps = taps
         };
     }
+
+private static byte[] FloatsToBytes(float[] samples)
+{
+    var bytes = new byte[samples.Length * sizeof(float)];
+    Buffer.BlockCopy(samples, 0, bytes, 0, bytes.Length);
+    return bytes;
+}
 
     public void LoadImpulseIfExists(string path, AudioEngine engine)
     {
