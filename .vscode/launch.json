@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "NAMStudio (.NET Launch)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/NAMStudio/bin/Debug/net8.0-windows/NAMStudio.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}/NAMStudio",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    }
+  ]
+}
