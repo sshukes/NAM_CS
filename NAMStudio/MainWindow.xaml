@@ -3,236 +3,107 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NAMStudio"
         mc:Ignorable="d"
-        Title="Neural Amp Modeler" Height="720" Width="1100">
+        Title="Neural Amp Modeler" Height="650" Width="1000">
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-        <Menu Grid.Row="0">
-            <MenuItem Header="Live Rig" Command="{Binding NavigateTabCommand}" CommandParameter="0" />
-            <MenuItem Header="Training" Command="{Binding NavigateTabCommand}" CommandParameter="1" />
-        </Menu>
-
-        <Border Grid.Row="1" Background="#f5f5f5" Padding="8" Margin="0,6,0,10" CornerRadius="4">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="Switch view:" VerticalAlignment="Center" Margin="0,0,8,0" />
-                <Button Content="Live Rig" Command="{Binding NavigateTabCommand}" CommandParameter="0" Margin="0,0,6,0" Padding="12,6" />
-                <Button Content="Training" Command="{Binding NavigateTabCommand}" CommandParameter="1" Padding="12,6" />
-            </StackPanel>
-        </Border>
-
-        <TabControl Grid.Row="2" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
-            <TabItem Header="Live Rig">
-                <Grid Margin="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Load NAM Model" Command="{Binding LoadModelCommand}" Padding="12,6" />
-                        <TextBlock Text="{Binding ModelPath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="260" />
-                        <Button Content="Load IR" Command="{Binding LoadIrCommand}" Padding="12,6" />
-                        <TextBlock Text="{Binding IrPath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="260" />
-                        <Button Content="Save Preset" Command="{Binding SavePresetCommand}" Padding="12,6" />
-                        <Button Content="Load Preset" Command="{Binding LoadPresetCommand}" Padding="12,6" />
-                    </StackPanel>
-                    <Grid Grid.Row="1" Margin="0,16,0,16">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0">
-                            <GroupBox Header="Input">
-                                <StackPanel Margin="8">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Input Gain" Width="90" VerticalAlignment="Center" />
-                                        <Slider Minimum="0" Maximum="24" Value="{Binding InputGain}" Width="200" />
-                                        <TextBlock Text="{Binding InputGain, StringFormat=0.0 dB}" Width="80" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Noise Gate" Width="90" VerticalAlignment="Center" />
-                                        <Slider Minimum="-80" Maximum="0" Value="{Binding NoiseGateThreshold}" Width="200" />
-                                        <TextBlock Text="{Binding NoiseGateThreshold, StringFormat=0 dB}" Width="80" />
-                                    </StackPanel>
-                                    <CheckBox Content="Gate Enabled" IsChecked="{Binding NoiseGateEnabled}" />
-                                </StackPanel>
-                            </GroupBox>
-                            <GroupBox Header="Model Controls">
-                                <StackPanel Margin="8">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Tone" Width="90" VerticalAlignment="Center" />
-                                        <Slider Minimum="0" Maximum="10" Value="{Binding Tone}" Width="200" />
-                                        <TextBlock Text="{Binding Tone, StringFormat=0.0}" Width="80" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Drive" Width="90" VerticalAlignment="Center" />
-                                        <Slider Minimum="0" Maximum="10" Value="{Binding Drive}" Width="200" />
-                                        <TextBlock Text="{Binding Drive, StringFormat=0.0}" Width="80" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Presence" Width="90" VerticalAlignment="Center" />
-                                        <Slider Minimum="0" Maximum="10" Value="{Binding Presence}" Width="200" />
-                                        <TextBlock Text="{Binding Presence, StringFormat=0.0}" Width="80" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Master" Width="90" VerticalAlignment="Center" />
-                                        <Slider Minimum="0" Maximum="10" Value="{Binding MasterVolume}" Width="200" />
-                                        <TextBlock Text="{Binding MasterVolume, StringFormat=0.0}" Width="80" />
-                                    </StackPanel>
-                                </StackPanel>
-                            </GroupBox>
-                            <GroupBox Header="Output">
-                                <StackPanel Margin="8">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Output Gain" Width="90" VerticalAlignment="Center" />
-                                        <Slider Minimum="-24" Maximum="24" Value="{Binding OutputGain}" Width="200" />
-                                        <TextBlock Text="{Binding OutputGain, StringFormat=0.0 dB}" Width="80" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Wet/Dry" Width="90" VerticalAlignment="Center" />
-                                        <Slider Minimum="0" Maximum="1" Value="{Binding WetDryMix}" Width="200" />
-                                        <TextBlock Text="{Binding WetDryMix, StringFormat=P0}" Width="80" />
-                                    </StackPanel>
-                                    <CheckBox Content="Limiter Enabled" IsChecked="{Binding LimiterEnabled}" />
-                                </StackPanel>
-                            </GroupBox>
-                            <GroupBox Header="Monitoring">
-                                <StackPanel Margin="8">
-                                    <ProgressBar Minimum="-60" Maximum="6" Value="{Binding InputLevel}" Height="18" />
-                                    <ProgressBar Minimum="-60" Maximum="6" Value="{Binding OutputLevel}" Height="18" />
-                                    <TextBlock Text="{Binding StatusMessage}" />
-                                </StackPanel>
-                            </GroupBox>
-                        </StackPanel>
-                        <Grid Grid.Column="1" Margin="16,0,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <ListBox ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}" DisplayMemberPath="Name" />
-                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
-                                <Button Content="Delete" Command="{Binding DeletePresetCommand}" />
-                                <Button Content="Rename" Command="{Binding RenamePresetCommand}" />
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Button Content="Start Audio" Command="{Binding StartAudioCommand}" Padding="12,6" />
-                        <Button Content="Stop Audio" Command="{Binding StopAudioCommand}" Padding="12,6" />
-                        <ToggleButton Content="Bypass" IsChecked="{Binding IsBypassed}" Padding="12,6" Width="90" />
-                    </StackPanel>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Training">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Orientation="Horizontal" >
+            <Button Content="Load NAM Model" Command="{Binding LoadModelCommand}" Padding="12,6" />
+            <TextBlock Text="{Binding ModelPath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="260" />
+            <Button Content="Load IR" Command="{Binding LoadIrCommand}" Padding="12,6" />
+            <TextBlock Text="{Binding IrPath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="260" />
+            <Button Content="Save Preset" Command="{Binding SavePresetCommand}" Padding="12,6" />
+            <Button Content="Load Preset" Command="{Binding LoadPresetCommand}" Padding="12,6" />
+        </StackPanel>
+        <Grid Grid.Row="1" Margin="0,16,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" >
+                <GroupBox Header="Input">
                     <StackPanel Margin="8">
-                        <GroupBox Header="Waveforms">
-                            <StackPanel Margin="8">
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="Load Clean Waveform" Command="{Binding BrowseCleanWaveformCommand}" Padding="10,6" />
-                                    <TextBlock Text="{Binding CleanWaveformPath}" Width="520" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="Load Noisy Waveform" Command="{Binding BrowseNoisyWaveformCommand}" Padding="10,6" />
-                                    <TextBlock Text="{Binding NoisyWaveformPath}" Width="520" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </StackPanel>
-                        </GroupBox>
-
-                        <GroupBox Header="Metadata">
-                            <Grid Margin="8">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="120" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Model Name" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
-                                <TextBox Text="{Binding TrainingMetadata.ModelName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="4" />
-                                <TextBlock Text="Artist" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
-                                <TextBox Text="{Binding TrainingMetadata.Artist, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="4" />
-                                <TextBlock Text="Genre" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" />
-                                <TextBox Text="{Binding TrainingMetadata.Genre, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="4" />
-                                <TextBlock Text="Notes" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" />
-                                <TextBox Text="{Binding TrainingMetadata.Notes, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" Margin="4" AcceptsReturn="True" Height="80" TextWrapping="Wrap" />
-                            </Grid>
-                        </GroupBox>
-
-                        <GroupBox Header="Training Parameters">
-                            <Grid Margin="8">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="80" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Epochs" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
-                                <Slider Minimum="1" Maximum="200" Value="{Binding TrainingParameters.Epochs}" Grid.Row="0" Grid.Column="1" Margin="4" />
-                                <TextBlock Text="{Binding TrainingParameters.Epochs}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" />
-
-                                <TextBlock Text="Batch Size" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" />
-                                <Slider Minimum="1" Maximum="64" Value="{Binding TrainingParameters.BatchSize}" Grid.Row="1" Grid.Column="1" Margin="4" />
-                                <TextBlock Text="{Binding TrainingParameters.BatchSize}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" />
-
-                                <TextBlock Text="Learning Rate" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" />
-                                <Slider Minimum="0.0001" Maximum="0.01" Value="{Binding TrainingParameters.LearningRate}" Grid.Row="2" Grid.Column="1" Margin="4" />
-                                <TextBlock Text="{Binding TrainingParameters.LearningRate, StringFormat=0.0000}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" />
-
-                                <TextBlock Text="Train Split" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" />
-                                <Slider Minimum="0.5" Maximum="0.95" Value="{Binding TrainingParameters.TrainSplit}" Grid.Row="3" Grid.Column="1" Margin="4" />
-                                <TextBlock Text="{Binding TrainingParameters.TrainSplit, StringFormat=P0}" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" />
-
-                                <TextBlock Text="Augmentation" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" />
-                                <CheckBox IsChecked="{Binding TrainingParameters.UseAugmentation}" Grid.Row="4" Grid.Column="1" Margin="4" Content="Enable noise/phase augmentation" />
-                            </Grid>
-                        </GroupBox>
-
-                        <Button Content="Train and Export NAM" Command="{Binding StartTrainingCommand}" HorizontalAlignment="Left" Padding="14,8" />
-
-                        <GroupBox Header="Training Runs">
-                            <StackPanel Margin="8">
-                                <DataGrid ItemsSource="{Binding TrainingRuns}" SelectedItem="{Binding SelectedTrainingRun}" AutoGenerateColumns="False" CanUserAddRows="False" Height="240">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Created" Binding="{Binding CreatedAt, StringFormat=G}" Width="140" />
-                                        <DataGridTextColumn Header="Model" Binding="{Binding Metadata.ModelName}" Width="140" />
-                                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100" />
-                                        <DataGridTextColumn Header="Final Loss" Binding="{Binding FinalLoss}" Width="90" />
-                                        <DataGridTextColumn Header="Val Loss" Binding="{Binding ValidationLoss}" Width="90" />
-                                        <DataGridTextColumn Header="SNR (dB)" Binding="{Binding SignalToNoiseRatio}" Width="90" />
-                                        <DataGridTextColumn Header="NAM File" Binding="{Binding NamFilePath}" Width="200" />
-                                        <DataGridTemplateColumn Header="Details" Width="80">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Button Content="Open" Command="{Binding DataContext.OpenRunDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Padding="6,2" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="View Selected" Command="{Binding OpenRunDetailsCommand}" CommandParameter="{Binding SelectedTrainingRun}" Padding="10,6" />
-                                    <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </StackPanel>
-                        </GroupBox>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Input Gain" Width="90" VerticalAlignment="Center" />
+                            <Slider Minimum="0" Maximum="24" Value="{Binding InputGain}" Width="200" />
+                            <TextBlock Text="{Binding InputGain, StringFormat=0.0 dB}" Width="80" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Noise Gate" Width="90" VerticalAlignment="Center" />
+                            <Slider Minimum="-80" Maximum="0" Value="{Binding NoiseGateThreshold}" Width="200" />
+                            <TextBlock Text="{Binding NoiseGateThreshold, StringFormat=0 dB}" Width="80" />
+                        </StackPanel>
+                        <CheckBox Content="Gate Enabled" IsChecked="{Binding NoiseGateEnabled}" />
                     </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-        </TabControl>
+                </GroupBox>
+                <GroupBox Header="Model Controls">
+                    <StackPanel Margin="8">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Tone" Width="90" VerticalAlignment="Center" />
+                            <Slider Minimum="0" Maximum="10" Value="{Binding Tone}" Width="200" />
+                            <TextBlock Text="{Binding Tone, StringFormat=0.0}" Width="80" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="Drive" Width="90" VerticalAlignment="Center" />
+                            <Slider Minimum="0" Maximum="10" Value="{Binding Drive}" Width="200" />
+                            <TextBlock Text="{Binding Drive, StringFormat=0.0}" Width="80" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="Presence" Width="90" VerticalAlignment="Center" />
+                            <Slider Minimum="0" Maximum="10" Value="{Binding Presence}" Width="200" />
+                            <TextBlock Text="{Binding Presence, StringFormat=0.0}" Width="80" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="Master" Width="90" VerticalAlignment="Center" />
+                            <Slider Minimum="0" Maximum="10" Value="{Binding MasterVolume}" Width="200" />
+                            <TextBlock Text="{Binding MasterVolume, StringFormat=0.0}" Width="80" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Output">
+                    <StackPanel Margin="8">
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="Output Gain" Width="90" VerticalAlignment="Center" />
+                            <Slider Minimum="-24" Maximum="24" Value="{Binding OutputGain}" Width="200" />
+                            <TextBlock Text="{Binding OutputGain, StringFormat=0.0 dB}" Width="80" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="Wet/Dry" Width="90" VerticalAlignment="Center" />
+                            <Slider Minimum="0" Maximum="1" Value="{Binding WetDryMix}" Width="200" />
+                            <TextBlock Text="{Binding WetDryMix, StringFormat=P0}" Width="80" />
+                        </StackPanel>
+                        <CheckBox Content="Limiter Enabled" IsChecked="{Binding LimiterEnabled}" />
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Monitoring">
+                    <StackPanel Margin="8">
+                        <ProgressBar Minimum="-60" Maximum="6" Value="{Binding InputLevel}" Height="18" />
+                        <ProgressBar Minimum="-60" Maximum="6" Value="{Binding OutputLevel}" Height="18" />
+                        <TextBlock Text="{Binding StatusMessage}" />
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+            <Grid Grid.Column="1" Margin="16,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <ListBox ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}" DisplayMemberPath="Name" />
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right"  Margin="0,8,0,0">
+                    <Button Content="Delete" Command="{Binding DeletePresetCommand}" />
+                    <Button Content="Rename" Command="{Binding RenamePresetCommand}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" >
+            <Button Content="Start Audio" Command="{Binding StartAudioCommand}" Padding="12,6" />
+            <Button Content="Stop Audio" Command="{Binding StopAudioCommand}" Padding="12,6" />
+            <ToggleButton Content="Bypass" IsChecked="{Binding IsBypassed}" Padding="12,6" Width="90" />
+        </StackPanel>
     </Grid>
 </Window>
