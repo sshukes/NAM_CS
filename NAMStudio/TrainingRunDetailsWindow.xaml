@@ -3,17 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Training Run Details" Height="380" Width="520">
     <ScrollViewer Padding="12">
-        <StackPanel>
-            <TextBlock Text="Waveforms" FontWeight="Bold" FontSize="14" />
-            <StackPanel>
-                <TextBlock Text="Input" FontWeight="SemiBold" />
-                <TextBlock TextWrapping="Wrap" Text="{Binding InputWaveformPath}" />
-            </StackPanel>
-            <StackPanel>
-                <TextBlock Text="Target" FontWeight="SemiBold" />
-                <TextBlock TextWrapping="Wrap" Text="{Binding TargetWaveformPath}" />
-            </StackPanel>
-            <Separator />
+        <StackPanel >
             <TextBlock Text="Metadata" FontWeight="Bold" FontSize="14" />
             <StackPanel>
                 <TextBlock Text="Model Name" FontWeight="SemiBold" />
@@ -28,29 +18,13 @@
                 <TextBlock Text="{Binding Metadata.Genre}" />
             </StackPanel>
             <StackPanel>
-                <TextBlock Text="Amp" FontWeight="SemiBold" />
-                <TextBlock Text="{Binding Metadata.Amp}" />
-            </StackPanel>
-            <StackPanel>
-                <TextBlock Text="Cabinet" FontWeight="SemiBold" />
-                <TextBlock Text="{Binding Metadata.Cabinet}" />
-            </StackPanel>
-            <StackPanel>
-                <TextBlock Text="Microphone" FontWeight="SemiBold" />
-                <TextBlock Text="{Binding Metadata.Microphone}" />
-            </StackPanel>
-            <StackPanel>
-                <TextBlock Text="Session" FontWeight="SemiBold" />
-                <TextBlock Text="{Binding Metadata.SessionId}" />
-            </StackPanel>
-            <StackPanel>
                 <TextBlock Text="Notes" FontWeight="SemiBold" />
                 <TextBlock TextWrapping="Wrap" Text="{Binding Metadata.Notes}" />
             </StackPanel>
 
             <Separator />
             <TextBlock Text="Parameters" FontWeight="Bold" FontSize="14" />
-            <UniformGrid Columns="2" Rows="6" Margin="0,4,0,0" HorizontalAlignment="Stretch">
+            <UniformGrid Columns="2" Rows="3" Margin="0,4,0,0" HorizontalAlignment="Stretch">
                 <StackPanel>
                     <TextBlock Text="Epochs" FontWeight="SemiBold" />
                     <TextBlock Text="{Binding Parameters.Epochs}" />
@@ -68,28 +42,8 @@
                     <TextBlock Text="{Binding Parameters.TrainSplit, StringFormat=P0}" />
                 </StackPanel>
                 <StackPanel>
-                    <TextBlock Text="Validation Split" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding Parameters.ValidationSplit, StringFormat=P0}" />
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock Text="Sample Rate" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding Parameters.SampleRate}" />
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock Text="Block Size" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding Parameters.BlockSize}" />
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock Text="Optimizer" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding Parameters.Optimizer}" />
-                </StackPanel>
-                <StackPanel>
                     <TextBlock Text="Use Augmentation" FontWeight="SemiBold" />
                     <CheckBox IsChecked="{Binding Parameters.UseAugmentation}" IsEnabled="False" />
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock Text="Early Stopping" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding Parameters.EarlyStopping} (patience {Binding Parameters.EarlyStoppingPatience})" />
                 </StackPanel>
             </UniformGrid>
 
@@ -98,10 +52,6 @@
             <StackPanel>
                 <TextBlock Text="Status" FontWeight="SemiBold" />
                 <TextBlock Text="{Binding Status}" />
-            </StackPanel>
-            <StackPanel>
-                <TextBlock Text="Trainer Message" FontWeight="SemiBold" />
-                <TextBlock TextWrapping="Wrap" Text="{Binding StatusMessage}" />
             </StackPanel>
             <StackPanel>
                 <TextBlock Text="NAM File" FontWeight="SemiBold" />

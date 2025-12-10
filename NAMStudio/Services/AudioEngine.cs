@@ -4,6 +4,7 @@ using System.Timers;
 using NAudio.Wave;
 
 using NAMStudio.Models;
+using Timer = System.Timers.Timer;
 
 namespace NAMStudio.Services;
 
