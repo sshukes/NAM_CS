@@ -176,7 +176,7 @@
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem Header="Runs & Files">
+            <TabItem Header="Runs Files">
                 <StackPanel Margin="8">
                     <DataGrid ItemsSource="{Binding TrainingRuns}" SelectedItem="{Binding SelectedTrainingRun}" AutoGenerateColumns="False" CanUserAddRows="False" Height="420">
                         <DataGrid.Columns>
